@@ -8,9 +8,10 @@ const authenticateToken = require('../middleware/authmiddleware');
 
 //Get the Forms 
 router.get('/',authenticateToken, async (req, res) => {
+    const userId = req.userId;
     try {
-        const form = await Form.find({});
-        return res.status(200).josn({form})
+        const form = await Form.find({ownerId:userId});
+        return res.status(200).json({form})
     } catch (error) {
       res.status(500).json({ error: 'Error creating form' });
     }
@@ -28,7 +29,7 @@ router.post('/',authenticateToken, async (req, res) => {
     const uniqueLink = generateUniqueLink(); // Implement this function
     const form = new Form({ title, questions, uniqueLink, ownerId });
     await form.save();
-    res.status(201).json({form,link:`${process.env.BASE_URL}/question/${uniqueLink}`});
+    res.status(201).json({form,link:uniqueLink});
   } catch (error) {
     res.status(500).json({ error: 'Error creating form' });
   }
@@ -51,14 +52,28 @@ router.get('/:uniqueLink',authenticateToken, async (req, res) => {
 
 router.post('/:uniqueLink',authenticateToken, async (req, res) => {
     try {
-      const { userId, answers } = req.body;
+      const { userId, answers, useremail} = req.body;
       const form = await Form.findOne({ uniqueLink: req.params.uniqueLink });
   
       if (!form) {
         return res.status(404).json({ error: 'Form not found' });
       }
+      if(form.responses.find(e=>e.userId==userId)){
+          return res.status(200).json({message:"you have alredy responded"})
+      }
+       // Check if all questions have answers
+    const unansweredQuestionIndexes = form.questions
+    .map((_, index) => index)
+    .filter((index) => !answers[index]);
+
+  if (unansweredQuestionIndexes.length > 0) {
+    return res.status(400).json({
+      error: `Please answer all questions. Unanswered questions: ${unansweredQuestionIndexes.join(', ')}`,
+    });
+  }
+     
   
-      form.responses.push({ userId, answers });
+      form.responses.push({ userId, answers,useremail });
       await form.save();
   
       res.status(201).json({ message: 'Response submitted successfully' });

@@ -5,5 +5,8 @@ export const REMOVE_QUESTION="REMOVE_QUESTION"
 export const LOADING="LOADING"
 export const ADD_ANSWER="ADD_ANSWER"
 export const CREATE_ANSWER="CREATE_ANSWER"
+export const ADD_FORMS="ADD_FORMS"
+export const SINGLE_FORM="SINGLE_FORM"
+export const RESET_SINGLE_FORM="RESET_SINGLE_FORM"
 
 

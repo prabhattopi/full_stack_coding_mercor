@@ -34,7 +34,7 @@ const qaData = [
 ];
 
 const ResponseModal=()=> {
-  const [isOpen, setIsOpen] = useState(false);
+    const [isOpen, setIsOpen] = useState(false);
   const [currentQA, setCurrentQA] = useState({ question: "", answer: "" });
 
   const openModal = (qa) => {
@@ -49,23 +49,9 @@ const ResponseModal=()=> {
 
   return (
     <div>
-      <Button onClick={() => openModal(qaData[0])}>Open Modal</Button>
+    
 
-      <Modal isOpen={isOpen} onClose={closeModal} size="xl">
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>{currentQA.question}</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            <p>{currentQA.answer}</p>
-          </ModalBody>
-          <ModalFooter>
-            <Button colorScheme="blue" mr={3} onClick={closeModal}>
-              Close
-            </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
+      
     </div>
   );
 }

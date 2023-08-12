@@ -41,7 +41,7 @@ function App() {
             }
           />
            <Route
-            path="/dashboard/users"
+            path="/dashboard/users/:uniqueLink"
             element={
               <PrivateRoutes>
                 <Users/>

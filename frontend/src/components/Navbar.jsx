@@ -1,6 +1,8 @@
 import React from 'react'
 import { Box, Text, Button } from '@chakra-ui/react';
+import useAuth from "../hooks/useAuth"
 const Navbar = () => {
+    const {logout}=useAuth()
     return (
         <Box
       position="sticky"
@@ -15,7 +17,7 @@ const Navbar = () => {
 
     >
      <Text color="white" fontWeight="bold" fontSize="35px">Mercor Form</Text>
-     <Button>Logout</Button>
+     <Button onClick={()=>logout()}>Logout</Button>
     </Box>
     )
 }

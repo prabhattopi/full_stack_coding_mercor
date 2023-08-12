@@ -4,16 +4,18 @@ import api from '../api'
 import useAuth from "../hooks/useAuth"
 import { toast } from 'react-toastify';
 import { Center, Spinner } from "@chakra-ui/react"; // Import Chakra UI components
-import { ADD_QUESTION, CREATE_TITLE,CREATE_QUESTION,REMOVE_QUESTION,LOADING } from './formActionType';
+import { ADD_QUESTION, CREATE_TITLE,CREATE_QUESTION,REMOVE_QUESTION,LOADING,ADD_ANSWER,ADD_FORMS,SINGLE_FORM,RESET_SINGLE_FORM } from './formActionType';
 export const FormContext = createContext()
 const initialState={
+    forms:[],
     loading:false,
     questionArray:[],
     question:"",
     title:"",
     answer:"",
     answerArray:[],
-    link:""
+    link:"",
+    singleForm:{}
 
 }
 const reducer=(state,action)=>{
@@ -30,7 +32,13 @@ const reducer=(state,action)=>{
         case CREATE_TITLE:
             return {...state,title:action.payload}      
         case LOADING:
-             return {...state,loading:action.payload}    
+             return {...state,loading:action.payload}  
+        case ADD_FORMS:
+            return {...state,forms:action.payload}   
+        case SINGLE_FORM:
+            return {...state,singleForm:action.payload}     
+        case RESET_SINGLE_FORM:
+            return {...state,singleForm:{}}     
         case "SET_LINK":
              return {...state,link:action.payload}   
         case 'RESET_FIELDS':
@@ -49,6 +57,8 @@ const FormProvider = ({ children }) => {
     // const [token,setToken]=useState(localStorage.getItem('form_walle'))
     const navigate=useNavigate()
 
+
+    
     const createForm=async()=>{
         dispatch({type:LOADING,payload:true})
         try{
@@ -98,12 +108,61 @@ const FormProvider = ({ children }) => {
        
 
     }
+    const handleSingleForm=async(uniquelink)=>{
+      
+        try{
+          let response=await api.get(`/form/${uniquelink}`,{
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('form_walle')}`,
+              },
+          })
+          dispatch({type:SINGLE_FORM,payload:response.data.form})
+        }
+        catch(err){
+           console.log("error")
+        }
 
+    }
+
+    useEffect(()=>{
+        let isCurrent=true
+
+        const getData=async()=>{
+            try{
+                let response=await api.get("/form",{
+                
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('form_walle')}`,
+                      },
+                
+            })
+            if(isCurrent){
+                dispatch({type:ADD_FORMS,payload:response.data.form})
+                dispatch({type:"SET_LINK",payload:response.data.link})
+            }
+
+            }
+            catch(err){
+             console.log("there is no data")
+            }
+           
+        }
+
+        getData()
+
+
+        return ()=>{
+            isCurrent=false
+        }
+
+    },[state.link])
+  
 
       const value={
        state,
        dispatch,
-       createForm
+       createForm,
+       handleSingleForm
     }
     return (
         <FormContext.Provider value={value}>

@@ -27,11 +27,16 @@ const formSchema = new mongoose.Schema({
         ref: 'User',
         required: true,
     },
-    answers: [{
-      questionId: {
-        type: String,
+    useremail:{
+        type:String,
         required: true,
-      },
+        unique:true
+    },
+    answers: [{
+        questionIndex: {
+            type: Number,
+            required: true,
+          },
       answer: {
         type: String,
         required: true,
