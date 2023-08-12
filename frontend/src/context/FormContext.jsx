@@ -1,4 +1,4 @@
-import React, { createContext, useEffect, useReducer } from 'react'
+import React, { createContext, useEffect, useReducer,useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import api from '../api'
 import useAuth from "../hooks/useAuth"
@@ -52,13 +52,14 @@ const reducer=(state,action)=>{
 const FormProvider = ({ children }) => {
     const [state, dispatch] = useReducer(reducer, initialState)
     const {user}=useAuth()
+    const [showData,setShowData]=useState(true)
     // const [user,setUser]=useState(null);
     // const [isLoading,setIsLoading]=useState(true);
     // const [token,setToken]=useState(localStorage.getItem('form_walle'))
     const navigate=useNavigate()
 
 
-    
+
     const createForm=async()=>{
         dispatch({type:LOADING,payload:true})
         try{
@@ -74,16 +75,19 @@ const FormProvider = ({ children }) => {
             },
             
             )
-            console.log(response.data)
+            
             if(response.status=="201"){
                 toast.success("post successfull", {
                     position: toast.POSITION.TOP_RIGHT, // Change the position of the toast
                     autoClose: 3000, // Auto-close the toast after 3000 milliseconds (3 seconds)
                     hideProgressBar:false, // Hide the progress bar
                   });
-                  dispatch({type:"SET_LINK",payload:response.data.link})
+                 
                   dispatch({type:"RESET_FIELDS"})
+                  dispatch({type:"SET_LINK",payload:response.data.link})
                   navigate("/dashboard")
+                
+             
             }
             else{
                 toast.error(response.data.message, {
@@ -138,7 +142,6 @@ const FormProvider = ({ children }) => {
             })
             if(isCurrent){
                 dispatch({type:ADD_FORMS,payload:response.data.form})
-                dispatch({type:"SET_LINK",payload:response.data.link})
             }
 
             }
@@ -155,7 +158,7 @@ const FormProvider = ({ children }) => {
             isCurrent=false
         }
 
-    },[state.link])
+    },[state.link,localStorage.getItem('form_walle')])
   
 
       const value={

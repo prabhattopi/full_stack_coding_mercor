@@ -1,17 +1,25 @@
+import React from "react";
+import { Navigate, useLocation } from "react-router-dom";
+import useAuth from "../hooks/useAuth";
 
-import { Navigate } from "react-router-dom"
-import useAuth from "../hooks/useAuth"
-import React from "react"
+const PublicRoutes = ({ children }) => {
+    const { user } = useAuth();
+    const location = useLocation();
 
+    if (user) {
+        // Get the stored attempted path
+        const attemptedPath = sessionStorage.getItem("attemptedPath");
 
-const PublicRoutes = ({children}) => {
-    const {user}=useAuth()
-    if(user){
-        return <Navigate to="/" replace={true}/>;
+        if (attemptedPath) {
+            // Clear the stored attempted path
+            sessionStorage.removeItem("attemptedPath");
+            return <Navigate to={attemptedPath} replace={true} />;
+        }
+
+        return <Navigate to="/" replace={true} />;
     }
 
     return children;
- 
 }
 
-export default PublicRoutes
+export default PublicRoutes;

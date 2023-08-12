@@ -16,6 +16,7 @@ const AnswerForm = () => {
         let isCurrent = true
         if (isCurrent) {
             handleSingleForm(uniqueLink)
+            
         }
 
         return () => {
@@ -83,6 +84,13 @@ const AnswerForm = () => {
             });
         }
     };
+    if(state.singleForm.ownerId?.toString()==user._id.toString()){
+        return (
+            <Box display="flex" alignItems="center" justifyContent="center" minHeight="90vh" fontSize="30px">
+                <Text>You are the owner</Text>
+            </Box>
+        )
+    }
     if (state.singleForm.responses?.find(e => e.userId.toString() == user._id.toString())||submitted) {
         return (
             <Box display="flex" alignItems="center" justifyContent="center" minHeight="90vh" fontSize="30px">
