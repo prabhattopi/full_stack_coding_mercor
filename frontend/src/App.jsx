@@ -5,8 +5,13 @@ import Home from './components/Home'
 import Navbar from './components/Navbar'
 import Users from "./components/Users"
 import AnswerForm from "./components/AnswerForm"
+import Signup from "./pages/Signup"
+import Login from "./pages/Login"
+import PublicRoutes from "./routes/PublicRoutes"
+import PrivateRoutes from "./routes/PrivateRoutes"
+import useAuth from "./hooks/useAuth"
 function App() {
-    const user=true
+    const {user}=useAuth()
     return (
       <>
         {user && <Navbar />}
@@ -14,59 +19,60 @@ function App() {
           <Route
             path="/"
             element={
-            //   <PrivateRoutes>
+              <PrivateRoutes>
                 <Home />
-            //   </PrivateRoutes>
+             </PrivateRoutes>
             }
           />
             <Route
             path="/dashboard"
             element={
-            //   <PrivateRoutes>
+              <PrivateRoutes>
                 <Dashboard />
-            //   </PrivateRoutes>
+             </PrivateRoutes>
             }
           />
             <Route
             path="/form"
             element={
-            //   <PrivateRoutes>
+              <PrivateRoutes>
                 <CreateForm/>
-            //   </PrivateRoutes>
+             </PrivateRoutes>
             }
           />
            <Route
             path="/dashboard/users"
             element={
-            //   <PrivateRoutes>
+              <PrivateRoutes>
                 <Users/>
-            //   </PrivateRoutes>
+              </PrivateRoutes>
             }
           />
            <Route
             path="question/:uniqueLink"
             element={
-            //   <PrivateRoutes>
+              <PrivateRoutes>
                 <AnswerForm/>
-            //   </PrivateRoutes>
+              </PrivateRoutes>
             }
           />
-           {/* <Route
+           <Route
             path="/login"
             element={
-            //   <PrivateRoutes>
-                <Home />
-            //   </PrivateRoutes>
+              <PublicRoutes>
+                <Login />
+                </PublicRoutes>
+    
             }
           />
            <Route
             path="/signup"
             element={
-            //   <PrivateRoutes>
-                <Home />
-            //   </PrivateRoutes>
+              <PublicRoutes>
+                <Signup />
+            </PublicRoutes>
             }
-          /> */}
+          />
           </Routes>
      
     </>

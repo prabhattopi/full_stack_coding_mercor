@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 require('dotenv').config();
 const cors=require('cors');
 const formRoutes = require('./routes/form.route');
-// const userRoutes = require('./src/routes/userRoutes');
+const userRoutes = require('./routes/user.route');
 
 const app = express();
 app.use(express.json());
@@ -18,7 +18,7 @@ mongoose
   .catch((err) => console.log(err));
 
 app.use('/api/form', formRoutes);
-// app.use('/api/users', userRoutes );
+app.use('/api/users', userRoutes );
 
 app.listen(4000, () => {
   console.log('Server is listening on port 4000 to');

@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import useForm from "../hooks/useForm"
+import {CREATE_QUESTION,CREATE_TITLE,ADD_QUESTION,REMOVE_QUESTION} from "../context/formActionType"
 import {
   Box,
   Button,
@@ -7,36 +9,25 @@ import {
   Textarea,
   useToast,
 } from '@chakra-ui/react';
+import {Link, useNavigate} from "react-router-dom"
 const CreateForm = () => {
-  const [user, setUser] = useState('');
-  const [loading,setLoading]=useState(false)
-  const [description, setDescription] = useState('');
-  const [questionArray,setQuestionArray]=useState([
-    "what is your Name?",
-    "How much you earn?"
-  ])
   const toast = useToast();
+  const {state,dispatch,createForm}=useForm()
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault();
     // Handle form submission logic here
-    toast({
-      title: 'Item Submitted',
-      description: 'Your item has been submitted successfully!',
-      status: 'success',
-      duration: 3000,
-      isClosable: true,
-    });
+    await createForm()
+  
   };
   const handleFilter=(item)=>{
-      let array=questionArray.filter(e=>e!=item)
-      setQuestionArray(array)
+     dispatch({type:REMOVE_QUESTION,payload:item})
   }
   const handlePost=()=>{
-    setQuestionArray([...questionArray,description])
-    setDescription("")
+    dispatch({type:ADD_QUESTION,payload:state.question})
+    dispatch({type:CREATE_QUESTION,payload:""})
+    
   }
-
   return (
     <Box
       className="flex items-center justify-center my-5"
@@ -64,12 +55,12 @@ const CreateForm = () => {
             <Input
               type="text"
               id="user"
-              value={user}
-              onChange={(e) => setUser(e.target.value)}
+              value={state.title}
+              onChange={(e) => dispatch({type:CREATE_TITLE,payload:e.target.value})}
             />
           </Box>
           {
-              questionArray.map((items)=>(
+              state.questionArray?.map((items)=>(
                   <Box display="flex" alignItems="center" mt="10px" mb="10px" gap="20px" key={items}>
                       {items}
                       <Button size="sm" fontSize="10x" p={2} borderRadius="50%" backgroundColor="red.400" onClick={()=>handleFilter(items)}>X</Button>
@@ -80,25 +71,25 @@ const CreateForm = () => {
           <Box mb="10px" mt="10px">
               <Box mb="10px">
               <label htmlFor="description" className="block w-20 text-sm font-medium">
-              Type you question :
+              Type your question :
             </label>
             <Button
             size="sm"
             p={2}
-         isDisabled={!description}
-          backgroundColor={description ? 'blue.300' : 'gray'}
+         isDisabled={!state.question}
+          backgroundColor={state.question ? 'blue.300' : 'gray'}
           onClick={handlePost}
           ml="30px"
         >
-          Post Question
+          Add Question
         </Button>
               </Box>
         
             <Textarea
               id="description"
-              value={description}
+              value={state.question}
               onChange={(e) => {
-                  setDescription(e.target.value)
+                 dispatch({type:CREATE_QUESTION,payload:e.target.value})
                  
                 }
               }
@@ -113,11 +104,12 @@ const CreateForm = () => {
               fontWeight="medium"
               rounded="md"
               colorScheme="blue"
-              isLoading={loading}
+              isLoading={state.loading}
               loadingText="Submitting"
-              isDisabled={loading}
+              isDisabled={state.loading}
               mr={2}
               mt={4}
+              
             >
               Submit
             </Button>

@@ -3,6 +3,8 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/user.model');
 const crypto = require('crypto');
 const authenticateToken=require("../middleware/authmiddleware")
+const express = require('express');
+const router = express.Router();
 router.post('/register', async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -50,7 +52,7 @@ router.post('/login', async (req, res) => {
   }
 });
 
-router.post('/getme', authenticateToken, async (req, res) => {
+router.get('/', authenticateToken, async (req, res) => {
   try {
     const userId = req.userId;
 

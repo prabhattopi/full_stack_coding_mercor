@@ -5,14 +5,30 @@ const Form = require('../models/form.model');
 const crypto = require('crypto');
 const authenticateToken = require('../middleware/authmiddleware');
 
+
+//Get the Forms 
+router.get('/',authenticateToken, async (req, res) => {
+    try {
+        const form = await Form.find({});
+        return res.status(200).josn({form})
+    } catch (error) {
+      res.status(500).json({ error: 'Error creating form' });
+    }
+  });
+
+
 // Create a new form
 router.post('/',authenticateToken, async (req, res) => {
   try {
     const { title, questions, ownerId } = req.body;
+    if(!title||!questions){
+      
+        return res.status(404).json({ message: 'Please fill the every fields' });
+    }
     const uniqueLink = generateUniqueLink(); // Implement this function
     const form = new Form({ title, questions, uniqueLink, ownerId });
     await form.save();
-    res.status(201).json({form});
+    res.status(201).json({form,link:`${process.env.BASE_URL}/question/${uniqueLink}`});
   } catch (error) {
     res.status(500).json({ error: 'Error creating form' });
   }

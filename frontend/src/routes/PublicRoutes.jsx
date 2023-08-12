@@ -1,7 +1,7 @@
 
 import { Navigate } from "react-router-dom"
 import useAuth from "../hooks/useAuth"
-import React, { FC } from "react"
+import React from "react"
 
 
 const PublicRoutes = ({children}) => {
